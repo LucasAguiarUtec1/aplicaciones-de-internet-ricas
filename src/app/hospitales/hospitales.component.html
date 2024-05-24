@@ -1,0 +1,67 @@
+<h1>Listas de Hospitales</h1>
+
+<div style="padding: 16px;">
+  <!-- Mostrar spinner mientras se carga -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Mostrar la tabla solo cuando no se está cargando -->
+  <div *ngIf="!isLoading">
+    <table mat-table [dataSource]="hospitals2" class="mat-elevation-z8" style="width: 100%;">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let hospital"> {{hospital.id}} </td>
+      </ng-container>
+
+      <!-- Nombre Column -->
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+        <td mat-cell *matCellDef="let hospital">
+          <ng-container *ngIf="editId !== hospital.id; else editNombre">
+            {{hospital.nombre}}
+          </ng-container>
+          <ng-template #editNombre>
+            <mat-form-field>
+              <input matInput [(ngModel)]="hospital.nombre" name="nombre" />
+            </mat-form-field>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <!-- Dirección Column -->
+      <ng-container matColumnDef="direccion">
+        <th mat-header-cell *matHeaderCellDef> Dirección </th>
+        <td mat-cell *matCellDef="let hospital">
+          <ng-container *ngIf="editId !== hospital.id; else editDireccion">
+            {{hospital.direccion}}
+          </ng-container>
+          <ng-template #editDireccion>
+            <mat-form-field>
+              <input matInput [(ngModel)]="hospital.direccion" name="direccion" />
+            </mat-form-field>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *matCellDef="let hospital">
+          <ng-container *ngIf="editId !== hospital.id">
+            <button mat-button (click)="enableEdit(hospital.id)">Editar</button>
+            <button mat-button (click)="deleteHospital(hospital.id)">Borrar</button>
+          </ng-container>
+          <ng-container *ngIf="editId === hospital.id">
+            <button mat-button (click)="saveEdit(hospital)">Guardar</button>
+            <button mat-button (click)="cancelEdit()">Cancelar</button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
